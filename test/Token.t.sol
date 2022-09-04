@@ -6,7 +6,9 @@ import "../src/Token.sol";
 
 contract TokenTest is Test {
     Token public token;
-    
+
+    event Transfer(address indexed from, address indexed to, uint256 value);
+
     function setUp() public {
        token = new Token("Token", "TKN", 18);
     }
@@ -16,32 +18,40 @@ contract TokenTest is Test {
     }
 
     function testMint() public {
-        token.mint(msg.sender, 1 ether);
-        assertEq(token.balanceOf(msg.sender), 1 ether);
+        token.mint(address(this), 1 ether);
+        assertEq(token.balanceOf(address(this)), 1 ether);
     }
 
     function testBurn() public {
         testMint();
-        token.burn(msg.sender, 1 ether);
-        assertEq(token.balanceOf(msg.sender), 0);
+        token.burn(address(this), 1 ether);
+        assertEq(token.balanceOf(address(this)), 0);
     }
 
     function testMintOwnership() public {
-        address impersonator = useExpectOwnership();
-        token.mint(impersonator, 1 ether);
+        useExpectOwnership(msg.sender);
+        token.mint(msg.sender, 1 ether);
     }
 
     function testBurnOwnership() public {
-        address impersonator = useExpectOwnership();
-        token.burn(impersonator, 1 ether);
+        useExpectOwnership(msg.sender);
+        token.burn(msg.sender, 1 ether);
     }
 
-    function useExpectOwnership() private returns (address) {
+    function testTransferEvent() public {
+        testMint();
+        // Refer to https://book.getfoundry.sh/forge/cheatcodes for details.
+        vm.expectEmit(true, true, true, true);
+        // The expected event.
+        emit Transfer(address(this), msg.sender, 0.01 ether);
+        // Trigger emit of actual event.
+        token.transfer(msg.sender, 0.01 ether);
+    }
+
+    function useExpectOwnership(address impersonator) private {
         // The call should revert.
         vm.expectRevert("Ownable: caller is not the owner");
         // Impersonate address for the next call.
-        address impersonator = 0xBEeFbeefbEefbeEFbeEfbEEfBEeFbeEfBeEfBeef;
         vm.prank(impersonator);
-        return impersonator;
     }
 }
