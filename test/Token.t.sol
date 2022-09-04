@@ -25,4 +25,23 @@ contract TokenTest is Test {
         token.burn(msg.sender, 1 ether);
         assertEq(token.balanceOf(msg.sender), 0);
     }
+
+    function testMintOwnership() public {
+        address impersonator = useExpectOwnership();
+        token.mint(impersonator, 1 ether);
+    }
+
+    function testBurnOwnership() public {
+        address impersonator = useExpectOwnership();
+        token.burn(impersonator, 1 ether);
+    }
+
+    function useExpectOwnership() private returns (address) {
+        // The call should revert.
+        vm.expectRevert("Ownable: caller is not the owner");
+        // Impersonate address for the next call.
+        address impersonator = 0xBEeFbeefbEefbeEFbeEfbEEfBEeFbeEfBeEfBeef;
+        vm.prank(impersonator);
+        return impersonator;
+    }
 }
