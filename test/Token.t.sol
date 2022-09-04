@@ -3,8 +3,9 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
 import "../src/Token.sol";
+import "./Utils.sol";
 
-contract TokenTest is Test {
+contract TokenTest is Test, TestUtils {
     Token public token;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
@@ -46,12 +47,5 @@ contract TokenTest is Test {
         emit Transfer(address(this), msg.sender, 0.01 ether);
         // Trigger emit of actual event.
         token.transfer(msg.sender, 0.01 ether);
-    }
-
-    function useExpectOwnership(address impersonator) private {
-        // The call should revert.
-        vm.expectRevert("Ownable: caller is not the owner");
-        // Impersonate address for the next call.
-        vm.prank(impersonator);
     }
 }
