@@ -48,4 +48,49 @@ contract NftTest is Test, TestUtils {
         nft.mint(5, msg.sender);
         assertEq(nft.getLastTokenId(), 5);
     }
+    
+    function testTokenUri() public {
+        testMint();
+        uint256 currentTokenId = nft.getLastTokenId();
+        bytes memory currentTokenUri = bytes(nft.tokenURI(currentTokenId));
+        bytes memory baseUri = bytes(nft.getBaseURI());
+        bytes memory fullUri = abi.encodePacked(
+            baseUri,
+            "/",
+            currentTokenId,
+            ".json"
+        );
+        assertEq(keccak256(currentTokenUri), keccak256(fullUri));
+    }
+
+    function testNonexistentTokenUri() public {
+        testMint();
+        uint256 lastTokenId = nft.getLastTokenId();
+        vm.expectRevert("Nonexistent token");
+        nft.tokenURI(lastTokenId + 1);
+    }
+
+    function testMintLimit() public {
+        testMintToggle();
+        vm.expectRevert("Not enough tokens remaining to mint");
+        nft.mint(101, msg.sender);
+    }
+
+    function testSetBaseTokenUri() public {
+        nft.setBaseURI("https://bitcoin.is.old.tech/");
+        assertEq(nft.getBaseURI(), "https://bitcoin.is.old.tech/");
+    }
+    
+    function testRenounceOwnership() public {
+        // Try renouncing as user.
+        useExpectOwnership(msg.sender);
+        nft.renounceOwnership();
+        // Renounce as owner.
+        nft.renounceOwnership();
+        // Should have set owner to fixed owner address.
+        assertEq(nft.owner(), address(1337));
+        // Should fail to renounce again as the previous owner.
+        useExpectOwnership(address(this));
+        nft.renounceOwnership();
+    }
 }
