@@ -19,6 +19,6 @@ forge script \
   script/"$FILE_NAME":"$CONTRACT_NAME" \
   --rpc-url "$RPC_URL" \
   --private-key "$PRIVATE_KEY" \
-  -- "$VERIFICATION_COMMANDS" \
   --broadcast \
-  -vvvv
+  -vvvv \
+  -- "$VERIFICATION_COMMANDS"
