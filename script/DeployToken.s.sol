@@ -9,7 +9,7 @@ contract DeployToken is Script, DeployUtils {
     string constant NAME = "TOKEN";
     string constant SYMBOL = "TKN";
     uint8 constant DECIMALS = 18;
-    uint256 constant OWNER_MINT = 10_000 * (18**DECIMALS);
+    uint256 constant OWNER_MINT = 10_000 * (10**DECIMALS);
 
     function run() public {
         deploy();
