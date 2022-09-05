@@ -42,4 +42,10 @@ contract NftTest is Test, TestUtils {
         useExpectOwnership(msg.sender);
         nft.mint(100, msg.sender);
     }
+    
+    function testMint() public {
+        testMintToggle();
+        nft.mint(5, msg.sender);
+        assertEq(nft.getLastTokenId(), 5);
+    }
 }
