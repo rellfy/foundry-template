@@ -17,4 +17,4 @@ forge script \
   --broadcast \
   --etherscan-api-key "$ETHERSCAN_KEY" \
   --verify \
-  -vvvv \
+  -vvvv
