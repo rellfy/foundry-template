@@ -46,7 +46,6 @@ contract NFT is ERC721Enumerable, Ownable {
         baseURI = _baseURI;
     }
 
-    // MODIFIERS
     modifier mintEnabled() {
         require(isMintEnabled, "Minting is not enabled");
         _;
@@ -60,24 +59,21 @@ contract NFT is ERC721Enumerable, Ownable {
         _;
     }
 
-    // PUBLIC READ-ONLY FUNCTIONS
     function getBaseURI() external view returns (string memory) {
         return baseURI;
     }
 
     function tokenURI(uint256 tokenId)
-    public
-    view
-    virtual
-    override
-    returns (string memory)
+        public
+        view
+        virtual
+        override
+        returns (string memory)
     {
         require(_exists(tokenId), "Nonexistent token");
-
         return string(abi.encodePacked(baseURI, "/", tokenId, ".json"));
     }
 
-    // ONLY OWNER FUNCTIONS
     function setBaseURI(string memory _baseURI) external onlyOwner {
         baseURI = _baseURI;
         emit BaseUriChanged(_baseURI);
@@ -88,7 +84,6 @@ contract NFT is ERC721Enumerable, Ownable {
         emit MintStatusChanged(isMintEnabled);
     }
 
-    // SUPPORTING FUNCTIONS
     function increasedTokenId() private returns (uint256) {
         tokenCounter.increment();
         return tokenCounter.current();
@@ -98,19 +93,19 @@ contract NFT is ERC721Enumerable, Ownable {
         return tokenCounter.current();
     }
 
-    // FUNCTION FOR MINTING
     function mint(uint256 numberOfTokens, address userAddress)
-    external
-    mintEnabled
-    onlyOwner
-    canMintTokens(numberOfTokens)
+        external
+        mintEnabled
+        onlyOwner
+        canMintTokens(numberOfTokens)
     {
         for (uint256 i = 0; i < numberOfTokens; i++) {
             _safeMint(userAddress, increasedTokenId());
         }
     }
 
-    /// @dev Override renounceOwnership to transfer ownership to a fixed address, make sure contract owner will never be address(0)
+    /// @dev Override renounceOwnership to transfer ownership to a fixed
+    /// address, making sure contract owner will never be address(0)
     function renounceOwnership() public override onlyOwner {
         _transferOwnership(fixedOwnerAddress);
     }
