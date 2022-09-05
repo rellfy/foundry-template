@@ -1,5 +1,5 @@
 # foundry-template
-A ✨ blazing fast ✨template for template for Solidity development with [Foundry][1].
+A ✨ blazing fast ✨ template for template for Solidity development with [Foundry][1].
 
 Refer to the [📖 Foundry Book][2] for documentation on Foundry.
 
