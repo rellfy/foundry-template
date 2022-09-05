@@ -17,7 +17,7 @@ forge test
 ```
 
 ### Deploying via script
-The helper script works on Unix-like systems (e.g. Linux/Mac)
+The helper script works on Unix-like systems by default (e.g. Linux/Mac) as it is a Bash script.
 
 1. Configure the `.env` file (see `.env.development`)
 2. Run the helper script, passing the script name as the first argument.
